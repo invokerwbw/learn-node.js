@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+    <link rel="stylesheet" href="/static/css/bootstrap.min.css">
+    <script src="/static/js/jquery.min.js"></script>
+    <script src="/static/js/vue.js"></script>
+    <script>
+        $(function () {
+            var vm = new Vue({
+                el: '#vm',
+                data: {
+                    name: 'Robot',
+                    age: 15
+                }
+            });
+            window.vm = vm;
+        });
+
+        function executeJs() {
+            try {
+                var code = $('#code').val();
+                var fn = new Function('var vm = window.vm;\n' + code);
+                fn();
+            } catch (e) {
+                console.log(e);
+            }
+            return false;
+        }
+    </script>
+</head>
+
+<body>
+
+    <div class="container">
+        <div class="row">
+            <div class="col-md-6">
+                <div class="panel panel-default">
+                    <div class="panel-heading">
+                        <h3 class="panel-title"><span class="glyphicon glyphicon-th-list"></span> MVVM</h3>
+                    </div>
+                    <div class="panel-body">
+                        <div id="vm">
+                            <p>Hello, {{ name }}!</p>
+                            <p>You are {{ age }} years old!</p>
+                        </div>
+                        <hr>
+                        <h3>Try change the name or age</h3>
+                        <form action="#" onsubmit="return executeJs()">
+                            <div class="form-group">
+                                <textarea id="code" class="form-control" style="font-family: Menlo,Monaco,Consolas,'Courier New',monospace; resize:none;"
+                                    rows="5">vm.name = 'Bob';</textarea>
+                            </div>
+                            <button type="submit" class="btn btn-primary">Execute</button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-6">
+                <div class="panel panel-default">
+                    <div class="panel-heading">
+                        <h3 class="panel-title"><span class="glyphicon glyphicon-eye-open"></span> Code</h3>
+                    </div>
+                    <div class="panel-body">
+                        <p>HTML:</p>
+                        <pre>&lt;div id="vm"&gt;
+            &lt;p&gt;Hello, {{ name }}!&lt;/p&gt;
+            &lt;p&gt;You are {{ age }} years old!&lt;/p&gt;
+        &lt;/div&gt;</pre>
+                        <p>JavaScript:</p>
+                        <pre>var vm = new Vue({
+            el: '#vm',
+            data: {
+                name: 'Robot',
+                age: 15
+            }
+        });</pre>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+</body>
+
+</html>
