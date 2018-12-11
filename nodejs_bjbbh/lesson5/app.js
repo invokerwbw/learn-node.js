@@ -40,7 +40,7 @@ var fetchUrl = (url, callback) => {
     console.log(`现在的并发数是${concurrencyCount}，正在抓取的是${url}`);
     async.waterfall([
         (cb) => {
-            cb(null, url)
+            cb(null, url);
         },
         fetchTopicUrl,
         fetchUserUrl
@@ -104,23 +104,34 @@ var fetchUserUrl = (topicContent, callback) => {
 // 对url列表进行抓取
 var fetchUrls = (topicUrls, callback) => {
     async.mapLimit(topicUrls, CONCURRENCY_COUNT, (url, cb) => {
-        fetchUrl(url, cb)
+        fetchUrl(url, cb);
     }, (err, result) => {
         callback(null, result);
     });
 };
 
-async.waterfall([
-    getTopicUrls,
-    fetchUrls
-], function (err, result) {
-    RESULT = result;
-});
+var fetch = function () {
+    async.waterfall([
+        getTopicUrls,
+        fetchUrls
+    ], function (err, result) {
+        console.log('finished!');
+        RESULT = result;
+    });
+};
 
 app.get('/', (request, response) => {
     response.send(RESULT);
 });
 
-app.listen(3000, () => {
-    console.log(`app is running at port 3000`);
+app.get('/clear', (request, response) => {
+    RESULT = 'Wait a minute...';
+    fetch();
+    response.send('RESULT clear...');
+});
+
+app.listen(process.env.PORT || 3000, () => {
+    let port = process.env.PORT || 3000;
+    console.log(`app is running at port ${port}`);
+    fetch();
 });
